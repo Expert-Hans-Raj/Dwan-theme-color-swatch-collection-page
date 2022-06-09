@@ -1,0 +1,50 @@
+  <div class="add-color-option">
+            {% assign keys = "Color,color,Colour,colour" | split: ',' %}
+            {% for key in keys %}
+            {% if card_product.options contains key %}
+            <div class="product_tile_color_holder">
+              {% for color_option in card_product.options_by_name[key].values %}
+              {% for variant in card_product.variants  %}
+
+              {% if variant.options contains color_option %}
+              {% if variant.image %}
+
+              {% assign background_style = color_option %}
+              {% endif %}
+              {% if variant.metafields.color.swatch %}
+              {% assign background_style = variant.metafields.color.swatch %}
+              {% endif %}
+              {% if variant.metafields.image.swatch %}
+              {% assign background_style = "url(" | append: variant.metafields.image.swatch | append: ")" %}
+              {% endif %}
+              {% endif %}
+              {% endfor %}
+              <!--- Coded by Hans Raj --->
+              <input
+                     type="radio" {% for variant in card_product.variants  %} {% if variant.options contains color_option %}
+                     {% if variant.image %}
+                     data-img=" {{ variant.image | img_url : "original"}}" style="background-image: url('{{ variant.image | img_url }}');"
+                     {% endif %} {% endif %}{% endfor %}
+                     name="{{ card_product.id }}_card_color"
+                     id="{{ card_product.id }}_color_{{ forloop.index }}"
+                     style="background: {{ color_option }}; background-size: cover;">
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+<script>
+$(document).ready(function(){
+  $(".product_tile_color_holder input").click(function(event){
+  var data_img = $(this).attr("data-img");
+   if(data_img == undefined)
+   {
+     alert("Not Found Image");
+   }else
+   {
+var newsrc= $(this).closest("li.grid__item.productsss").find("img.mian_image").attr('srcset',data_img);
+      console.log(newsrc);
+   }
+  });
+});
+</script>
